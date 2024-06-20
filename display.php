@@ -29,7 +29,7 @@
 
     
         $dd=$_GET['link'];
-        $sql3="select pdf from pdf where topic=?";
+        $sql3="select pdf from pdf where title=?";
       
     $stm=$conn->prepare($sql3);
 

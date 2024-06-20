@@ -24,8 +24,53 @@ $sql="insert into pdf(pdf,details,topic) values('$pdf','$do1','$do2')";
 $query=mysqli_query($conn,$sql);
 
 }
+$ass_arr=array();
+$sql="select pdf from pdf where pdf='$pdf'";
+$stmt=$conn->prepare($sql);
 
+$stmt->execute();
+$result=$stmt->get_result();
+
+while($text=$result->fetch_array()){
+
+
+     
+    include 'vendor/autoload.php';
+    $parser=new \Smalot\PdfParser\Parser();
+    
+    $txt=$text['pdf'];
+    $file="pdf/$txt";
+    $pdf1=$parser->parseFile($file);
+    $textContent=$pdf1->getText();
+    $textContent=strtolower($textContent);
+    $words_count=str_word_count($textContent,1);
+    $final_words=array_diff($words_count,$stop_words);
+    $frequencyofword=array_count_values($final_words);
+    $top_key_words=array_slice($frequencyofword,0,10);
+   
+    
+   
 }
+
+
+
+
+$string='';
+foreach($top_key_words as $key=>$val){
+    $string.=$key;
+    $string.=',';
+    $string.=$val;
+    $string.=',';
+}
+
+
+$sql1="update pdf set keyword='$string' where pdf='$pdf'";
+$query=mysqli_query($conn,$sql1);
+}
+
+
+
+
 catch(Exception $e){
     echo"$e";
 }

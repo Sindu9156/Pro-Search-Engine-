@@ -182,21 +182,55 @@
               }
             }
     
-           
-       
- 
-
-       
-        $ass_arr=array();
+            $ass_arr=array();
             $sql="select pdf from pdf";
             $stmt=$conn->prepare($sql);
    
             $stmt->execute();
             $result=$stmt->get_result();
+            
+            $text=$result->fetch_array();
             $count_pdf=0;
-            while($text=$result->fetch_array()){
+            while( $text=$result->fetch_array()){            
+                    $sql1="select keyword from pdf where pdf='$text[0]'";
+                    $stmt1=$conn->prepare($sql1);
+                    $stmt1->execute();
+                    $result1=$stmt1->get_result();
+                    $word=$result1->fetch_array();
+                    $string=explode(",",$word[0]);
+                   
+                 
+                    for($g=0;$g<count($arr3);$g++){             
+                       $index=array_search($arr3[$g],$string);
+                       
+                    if($index!=false){
+                        $count_pdf=$string[$index+1];
+                        if(array_key_exists($text[0],$ass_arr)){
+                               $ass_arr[$text[0]]+=$count_pdf;
+                        }
+                        else{
+                            $ass_arr[$text[0]]=$count_pdf;
+                        }
+                       
+                    }
+                   
+                
+                    
+                }
+               
+            }
+           
             
-            
+        
+          /*  for($g=0;$g<count($arr3);$g++){
+               for($i=0;$i<count($word_array);$i++){
+                if(in_array($arr3[$g],$word_array[$i])){
+
+                }
+               }
+
+
+            }
                  
                 include 'vendor/autoload.php';
                 $parser=new \Smalot\PdfParser\Parser();
@@ -222,14 +256,17 @@
             }
                
             }
-            
+            */
             arsort($ass_arr);
+        
             
             if(!empty($ass_arr)){
+             
+            
                 foreach($ass_arr as $x=>$y){
-                 //  echo $y;
+                   echo $y;
                $sql="select details from pdf where pdf=?";
-            $sql1="select topic from pdf where pdf=?";
+            $sql1="select title from pdf where pdf=?";
             $stmt=$conn->prepare($sql);
             $stmt->bind_param("s",$x);
             $stmt->execute();
@@ -242,6 +279,7 @@
    while($info=$result->fetch_array() and $topic=$result1->fetch_array()){     
           
           ?>
+    
             <div id="i1"width="40px" height="20px" >
             <a href="display.php?link=<?php foreach($topic as $t){
                     echo $t;
@@ -254,22 +292,27 @@
             echo $in;
             break;
         }
-    }?>
+    ?>
         </div><br>
         </body></html> <?php
             }
+        }     
         }
-    }
-    else{
-        ?>
-         <strong>No results found</strong>
-         <?php
-    }
-              
+        else{
+            ?>
+             <strong>No results found</strong>
+             <?php
+        }
+    
+       
+ 
+
+       
+        
 
 
    
         mysqli_close($conn);
 
-
+    }
     ?>
