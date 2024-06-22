@@ -44,6 +44,9 @@ while($text=$result->fetch_array()){
     $textContent=$pdf1->getText();
     $textContent=strtolower($textContent);
     $words_count=str_word_count($textContent,1);
+    $index=array_search("abstract",$words_count);
+    $details=array_slice($words_count,$index+1,10);
+    $title=array_slice($words_count,0,5);
     $final_words=array_diff($words_count,$stop_words);
     $frequencyofword=array_count_values($final_words);
     $top_key_words=array_slice($frequencyofword,0,10);
@@ -62,10 +65,24 @@ foreach($top_key_words as $key=>$val){
     $string.=$val;
     $string.=',';
 }
-
+$string2='';
+foreach($details as $val){
+    $string2.=$val;
+    $string2.=' ';
+}
+$string1='';
+foreach($title as $val){
+    $string1.=$val;
+    $string1.=' ';
+}
 
 $sql1="update pdf set keyword='$string' where pdf='$pdf'";
+$sql2="update pdf set details='$string2' where pdf='$pdf'";
+$sql3="update pdf set title='$string1' where pdf='$pdf'";
+
 $query=mysqli_query($conn,$sql1);
+$query=mysqli_query($conn,$sql2);
+$query=mysqli_query($conn,$sql3);
 }
 
 
