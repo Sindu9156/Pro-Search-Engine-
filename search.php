@@ -151,7 +151,7 @@
                             if($arr4[$o1]==$arr5[$o]){
                                 $l1=$o1;
                                 for($o2=$o;$o2<count($arr5);$o2++){
-                                      if($arr4[$l1]==$arr5[$o2] and $l1<count($arr4)){
+                                      if($l1<count($arr4) and$arr4[$l1]==$arr5[$o2]){
                                        
                                         $count1=$count1+1;
                                         $l1++;
@@ -264,7 +264,7 @@
              
             
                 foreach($ass_arr as $x=>$y){
-                   echo $y;
+                
                $sql="select details from pdf where pdf=?";
             $sql1="select title from pdf where pdf=?";
             $stmt=$conn->prepare($sql);
